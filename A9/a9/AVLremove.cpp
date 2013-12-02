@@ -61,13 +61,25 @@ bool AVLTree<Key>::remove(Key key) {
 	AVLNode* node;
 	AVLNode* predecessor;
 	AVLNode* child;
+	AVLNode* par;
 	bool found = false;	
 	node = search(root_, key);
 	if(node == NULL){
 		return false;
 	}
 	else{
-		predecessor = node->parent;
+		//find predecessor
+		if(node == NULL){
+			return false;
+		}
+		if(node->left != NULL){
+			predecessor = maximum(node->left);
+		}
+		par = node->parent;
+		while(par != NULL && par->left == node){
+			node = par;
+			par = par->parent;
+		}
 		//case 1
 		if(node->right == NULL && node->left == NULL){
 			if(node == predecessor->left){
@@ -95,6 +107,7 @@ bool AVLTree<Key>::remove(Key key) {
 			else{
 				predecessor->right = child;
 			}
+			delete(node);
 		}
 		//case 3
 		if(node->left != NULL && node->right != NULL){
